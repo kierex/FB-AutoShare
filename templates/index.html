@@ -3,164 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facebook Auto Share by Vrax</title>
+    <title>Facebook Auto Share</title>
     <style>
-        /* General body styling */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(45deg, #6a11cb, #2575fc);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        /* Form container styling */
-        form {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-            width: 100%;
-            animation: popUp 1s ease-out;
-        }
-
-        /* Input and button styling */
-        input, button {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        input {
-            background: rgba(255, 255, 255, 0.8);
+            background: linear-gradient(to right, #4facfe, #00f2fe);
             color: #333;
         }
-
-        input:focus {
-            outline: none;
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-        }
-
-        button {
-            background: #ff7eb3;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        button:hover {
-            background: #ff567a;
-        }
-
-        /* Heading styling */
-        h2 {
-            margin-bottom: 20px;
+        header {
             text-align: center;
-            font-size: 24px;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            background-color: #0078d7;
+            color: #fff;
         }
-
-        /* Result container */
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            padding: 20px;
+        }
+        form {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0078d7;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        button {
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
         #result {
             margin-top: 20px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 5px;
-            text-align: left;
             white-space: pre-wrap;
-        }
-
-        /* Keyframes for form pop-up */
-        @keyframes popUp {
-            0% {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* Adding responsiveness */
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            form {
-                padding: 15px;
-            }
-            input, button {
-                font-size: 14px;
-            }
-            h2 {
-                font-size: 20px;
-            }
+            background: #f9f9f9;
+            border-radius: 4px;
+            padding: 10px;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
 <body>
-    <h2>🌟 Facebook Auto Share 🌟</h2>
-    <form id="shareForm" method="POST">
-        <!-- Input for Facebook Cookie -->
-        <label for="cookie">🔑 Facebook Cookie:</label>
-        <input type="text" id="cookie" name="cookie" placeholder="Enter your Facebook cookie..." required>
+    <header>
+        <h1>Vern allias Vrax Facebook Auto Share</h1>
+    </header>
+    <main>
+        <form id="shareForm" method="POST">
+            <h2>Share Your Post</h2>
+            <label for="cookie">Facebook Cookie:</label>
+            <input type="text" id="cookie" name="cookie" placeholder="Enter your FB cookie" required>
 
-        <!-- Input for Post URL -->
-        <label for="url">🔗 Post URL:</label>
-        <input type="url" id="url" name="url" placeholder="Enter the post URL..." required>
+            <label for="url">Post URL:</label>
+            <input type="text" id="url" name="url" placeholder="Enter post URL" required>
 
-        <!-- Input for Share Limit -->
-        <label for="limit">🔢 Share Limit:</label>
-        <input type="number" id="limit" name="limit" min="1" placeholder="Enter the share limit..." required>
+            <label for="limit">Share Limit:</label>
+            <input type="number" id="limit" name="limit" placeholder="Enter the share limit" required>
 
-        <!-- Submit Button -->
-        <button type="submit">🚀 Share Now</button>
-    </form>
-
-    <!-- Result display -->
+            <button type="submit">Share Now</button>
+        </form>
+    </main>
     <div id="result"></div>
 
     <script>
-        // Form submission handler
         document.getElementById("shareForm").onsubmit = async (event) => {
-            // Prevent default form submission
             event.preventDefault();
-
-            // Gather input data
             const data = {
                 cookie: document.getElementById("cookie").value,
                 url: document.getElementById("url").value,
-                limit: parseInt(document.getElementById("limit").value)
+                limit: document.getElementById("limit").value
             };
 
-            // Display loading message
-            document.getElementById("result").innerText = "⏳ Sharing in progress...";
-
             try {
-                // Send data to server
                 const response = await fetch('/share', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-
-                // Parse and display result
                 const result = await response.json();
                 document.getElementById("result").innerText = JSON.stringify(result, null, 2);
             } catch (error) {
-                // Handle errors
-                document.getElementById("result").innerText = `❌ Error: ${error.message}`;
+                document.getElementById("result").innerText = `Error: ${error.message}`;
             }
         };
     </script>
