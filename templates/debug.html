@@ -14,7 +14,7 @@
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     <strong>Warning:</strong> This page contains sensitive information. Do not share screenshots or data from this page.
                 </div>
-                
+
                 <h4 class="digital-title">Application Info</h4>
                 <div class="table-responsive">
                     <table class="table table-dark table-bordered">
@@ -32,7 +32,7 @@
                         </tr>
                     </table>
                 </div>
-                
+
                 <h4 class="digital-title mt-4">Configuration</h4>
                 <div class="table-responsive">
                     <table class="table table-dark table-bordered">
@@ -44,7 +44,7 @@
                         {% endfor %}
                     </table>
                 </div>
-                
+
                 <h4 class="digital-title mt-4">Session Data</h4>
                 <div class="table-responsive">
                     <table class="table table-dark table-bordered">
@@ -62,7 +62,7 @@
                         {% endfor %}
                     </table>
                 </div>
-                
+
                 <h4 class="digital-title mt-4">Request Info</h4>
                 <div class="table-responsive">
                     <table class="table table-dark table-bordered">
@@ -74,22 +74,21 @@
                         {% endfor %}
                     </table>
                 </div>
-                
+
                 <h4 class="digital-title mt-4">Recent Log Entries</h4>
-                <div class="console" style="height: 400px;">
+                <div class="console bg-dark text-light p-3" style="height: 400px; overflow-y: auto; font-family: monospace;">
                     {% for line in log_lines %}
-                        <p class="console-line 
-                            {% if 'ERROR' in line %}console-error
-                            {% elif 'WARNING' in line %}console-warning
-                            {% elif 'INFO' in line %}console-info
-                            {% else %}console-line{% endif %}">
-                            {{ line }}
-                        </p>
+                    <div class="{% if 'ERROR' in line %}text-danger
+                                {% elif 'WARNING' in line %}text-warning
+                                {% elif 'INFO' in line %}text-info
+                                {% endif %}">
+                        {{ line }}
+                    </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
-        
+
         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
             <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
                 <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
@@ -101,11 +100,10 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Auto-scroll console to bottom
-        const console = document.querySelector('.console');
-        if (console) {
-            console.scrollTop = console.scrollHeight;
+    document.addEventListener('DOMContentLoaded', function () {
+        const consoleBox = document.querySelector('.console');
+        if (consoleBox) {
+            consoleBox.scrollTop = consoleBox.scrollHeight;
         }
     });
 </script>
