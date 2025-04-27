@@ -16,9 +16,9 @@
                         <div class="col-md-4">
                             <div class="card bg-success bg-opacity-25 mb-3">
                                 <div class="card-body">
-                                    <h1 class="display-4 text-success">
-                                        {{ results|selectattr('status', 'equalto', 'success')|list|length }}
-                                    </h1>
+                                    <h2 class="text-success fw-bold">
+                                        {{ results|selectattr('status', 'equalto', 'success')|list|length if results else 0 }}
+                                    </h2>
                                     <p class="text-success">Successful</p>
                                 </div>
                             </div>
@@ -26,9 +26,9 @@
                         <div class="col-md-4">
                             <div class="card bg-danger bg-opacity-25 mb-3">
                                 <div class="card-body">
-                                    <h1 class="display-4 text-danger">
-                                        {{ results|selectattr('status', 'equalto', 'error')|list|length }}
-                                    </h1>
+                                    <h2 class="text-danger fw-bold">
+                                        {{ results|selectattr('status', 'equalto', 'error')|list|length if results else 0 }}
+                                    </h2>
                                     <p class="text-danger">Failed</p>
                                 </div>
                             </div>
@@ -36,9 +36,9 @@
                         <div class="col-md-4">
                             <div class="card bg-primary bg-opacity-25 mb-3">
                                 <div class="card-body">
-                                    <h1 class="display-4 text-primary">
-                                        {{ results|length }}
-                                    </h1>
+                                    <h2 class="text-primary fw-bold">
+                                        {{ results|length if results else 0 }}
+                                    </h2>
                                     <p class="text-primary">Total</p>
                                 </div>
                             </div>
@@ -58,29 +58,37 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for result in results %}
-                            <tr>
-                                <td>{{ loop.index }}</td>
-                                <td>
-                                    {% if result.status == 'success' %}
-                                    <span class="badge bg-success">
-                                        <i class="fas fa-check-circle me-1"></i> Success
-                                    </span>
-                                    {% else %}
-                                    <span class="badge bg-danger">
-                                        <i class="fas fa-times-circle me-1"></i> Failed
-                                    </span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ result.message }}</td>
-                                <td>{{ result.timestamp|default('N/A') }}</td>
-                                {% if result.post_id %}
-                                <td><small class="text-muted">ID: {{ result.post_id }}</small></td>
-                                {% else %}
-                                <td>-</td>
-                                {% endif %}
-                            </tr>
-                            {% endfor %}
+                            {% if results %}
+                                {% for result in results %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        {% if result.status == 'success' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle me-1"></i> Success
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times-circle me-1"></i> Failed
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ result.message|default('No message') }}</td>
+                                    <td>{{ result.timestamp|default('N/A') }}</td>
+                                    <td>
+                                        {% if result.post_id %}
+                                        <small class="text-muted">ID: {{ result.post_id }}</small>
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No results to display.</td>
+                                </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -90,30 +98,4 @@
                         <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
                     </a>
                     <a href="{{ url_for('settings') }}" class="btn btn-info">
-                        <i class="fas fa-cog me-2"></i> Configure Settings
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mt-4">
-            <div class="card-header">
-                <i class="fas fa-lightbulb me-2"></i> Tips
-            </div>
-            <div class="card-body">
-                <div class="alert alert-info">
-                    <h5 class="alert-heading">
-                        <i class="fas fa-info-circle me-2"></i> Sharing Tips
-                    </h5>
-                    <ul>
-                        <li>If you're experiencing many failures, try increasing the share delay in settings.</li>
-                        <li>Facebook may temporarily block sharing if you do it too frequently.</li>
-                        <li>For best results, limit sharing to 10-20 posts per hour.</li>
-                        <li>If you get blocked, wait at least 30 minutes before trying again.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+                        <i class
