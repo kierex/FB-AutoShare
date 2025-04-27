@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, jsonify
-import os, re, requests, datetime, random
+import os, re, requests, datetime
 
 app = Flask(__name__)
 
@@ -26,6 +26,13 @@ def share():
         data = request.get_json()
         cookie = data.get('cookie')
         url = data.get('url')
+        
+        # Validate cookie and URL
+        if not cookie:
+            return jsonify({"error": "Cookie is required."}), 400
+        if not url:
+            return jsonify({"error": "URL is required."}), 400
+        
         try:
             limit = int(data.get('limit', 1))  # Handle limit safely
         except ValueError:
@@ -86,6 +93,5 @@ def get_token(cookie):
 
 
 if __name__ == '__main__':
-    import os
-    
+    # Running the app
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
