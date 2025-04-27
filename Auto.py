@@ -76,22 +76,4 @@ def get_token(cookie):
         response = requests.get(
             "https://business.facebook.com/business_locations",
             headers={
-                "user-agent": "Mozilla/5.0 (Linux; Android 8.1.0; MI 8 Build/OPM1.171019.011) "
-                              "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.86 "
-                              "Mobile Safari/537.36",
-                "cookie": cookie
-            }
-        )
-        match = re.search("(EAAG\w+)", response.text)
-        if match:
-            return match.group(1)
-        else:
-            return None
-    except Exception as e:
-        print(f"Error fetching token: {e}")
-        return None
-
-
-if __name__ == '__main__':
-    # Running the app
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+                "user-agent": "Mozilla/5.0 (Linux; Android 8.1.0; MI 8 Build/OPM1.
