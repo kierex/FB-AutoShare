@@ -81,14 +81,14 @@
                         <label for="link" class="form-label">
                             <i class="fas fa-link me-1"></i> Post Link
                         </label>
-                        {{ form.link(class="form-control", placeholder="Enter Facebook post link") }}
+                        {{ form.link(class="form-control", id="link", placeholder="Enter Facebook post link") }}
                         <div class="form-text text-info">Example: https://www.facebook.com/username/posts/postid</div>
                         {% if form.link.errors %}
-                            <div class="text-danger mt-1">
-                                {% for error in form.link.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
+                        <div class="text-danger mt-1">
+                            {% for error in form.link.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
                         {% endif %}
                     </div>
 
@@ -96,19 +96,19 @@
                         <label for="limit" class="form-label">
                             <i class="fas fa-hashtag me-1"></i> Share Limit
                         </label>
-                        {{ form.limit(class="form-control", placeholder="Number of times to share (1-100k)", value="1") }}
+                        {{ form.limit(class="form-control", id="limit", placeholder="Number of times to share (1-100k)", value="1") }}
                         <div class="form-text text-info">How many times to share the post (1-100k)</div>
                         {% if form.limit.errors %}
-                            <div class="text-danger mt-1">
-                                {% for error in form.limit.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
+                        <div class="text-danger mt-1">
+                            {% for error in form.limit.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
                         {% endif %}
                     </div>
 
                     <div class="d-grid">
-                        {{ form.submit(class="btn btn-success btn-lg", id="shareButton") }}
+                        {{ form.submit(class="btn btn-success btn-lg", id="shareButton", value="Share Now") }}
                     </div>
                 </form>
             </div>
@@ -119,39 +119,35 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const shareForm = document.getElementById('shareForm');
         const linkInput = document.getElementById('link');
+        const limitInput = document.getElementById('limit');
+        const shareButton = document.getElementById('shareButton');
 
-        // Auto-focus on the link input
         if (linkInput) {
             linkInput.focus();
         }
 
-        // Add validation for the form
-        if (shareForm) {
-            shareForm.addEventListener('submit', function(e) {
-                const link = document.getElementById('link').value;
-                const limit = document.getElementById('limit').value;
+        shareForm.addEventListener('submit', function (e) {
+            const link = linkInput.value.trim();
+            const limit = parseInt(limitInput.value);
 
-                // Basic validation
-                if (!link || !link.startsWith('http')) {
-                    e.preventDefault();
-                    alert('Please enter a valid Facebook post link starting with http:// or https://');
-                    return false;
-                }
+            if (!link || !link.startsWith('http')) {
+                e.preventDefault();
+                alert('Please enter a valid Facebook post link starting with http:// or https://');
+                return false;
+            }
 
-                if (!limit || isNaN(limit) || limit < 1 || limit > 100000) {
-                    e.preventDefault();
-                    alert('Please enter a valid share limit between 1 and 100000');
-                    return false;
-                }
+            if (!limit || isNaN(limit) || limit < 1 || limit > 100000) {
+                e.preventDefault();
+                alert('Please enter a valid share limit between 1 and 100000');
+                return false;
+            }
 
-                // Disable the button to prevent double submission
-                document.getElementById('shareButton').disabled = true;
-                document.getElementById('shareButton').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
-            });
-        }
+            shareButton.disabled = true;
+            shareButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+        });
     });
 </script>
 {% endblock %}
