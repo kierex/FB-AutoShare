@@ -10,15 +10,16 @@
                 <i class="fas fa-share-alt me-2"></i> Sharing Post
             </div>
             <div class="card-body">
-                <form id="csrfForm" style="display:none;">
+                <form id="csrfForm" style="display:none;" method="POST">
                     {{ form.hidden_tag() }}
                 </form>
-                <div class="grandpa-ascii">
-                    ██████╗ ██████╗  █████╗ ███╗   ██╗██████╗ ██████╗  █████╗
-                    ██╔════╝ ██╔══██╗██╔══██╗████╗  ██║██╔══██╗██╔══██╗██╔══██╗
-                    ██║  ███╗██████╔╝███████║██╔██╗ ██║██║  ██║██████╔╝███████║
-                    ██║   ██║██╔══██╗██╔══██║██║╚██╗██║██║  ██║██╔═══╝ ██╔══██║
-                    ╚██████╔╝██║  ██║██║  ██║██║ ╚████║██████╔╝██║     ██║  ██║
+
+                <div class="grandpa-ascii text-center text-monospace small mb-3">
+                    ██████╗ ██████╗  █████╗ ███╗   ██╗██████╗ ██████╗  █████╗<br>
+                    ██╔════╝ ██╔══██╗██╔══██╗████╗  ██║██╔══██╗██╔══██╗██╔══██╗<br>
+                    ██║  ███╗██████╔╝███████║██╔██╗ ██║██║  ██║██████╔╝███████║<br>
+                    ██║   ██║██╔══██╗██╔══██║██║╚██╗██║██║  ██║██╔═══╝ ██╔══██║<br>
+                    ╚██████╔╝██║  ██║██║  ██║██║ ╚████║██████╔╝██║     ██║  ██║<br>
                      ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝     ╚═╝  ╚═╝
                 </div>
 
@@ -26,7 +27,7 @@
                     <h5 class="digital-title">Share Details</h5>
                     <div class="row">
                         <div class="col-md-6">
-                            <p class="mb-2"><strong>Post Link:</strong></p>
+                            <label class="form-label"><strong>Post Link:</strong></label>
                             <div class="input-group">
                                 <input type="text" class="form-control" value="{{ link }}" readonly>
                                 <button class="btn btn-outline-info" type="button" onclick="copyToClipboard('{{ link }}')">
@@ -35,10 +36,8 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <p class="mb-2"><strong>Share Limit:</strong></p>
-                            <div class="input-group">
-                                <input type="text" class="form-control" value="{{ limit }}" readonly>
-                            </div>
+                            <label class="form-label"><strong>Share Limit:</strong></label>
+                            <input type="text" class="form-control" value="{{ limit }}" readonly>
                         </div>
                     </div>
                 </div>
@@ -63,25 +62,23 @@
                                      aria-valuemin="0"
                                      aria-valuemax="100">0%</div>
                             </div>
-                            <div class="mt-2 text-center">
+                            <div class="mt-2">
                                 <span id="progressText" class="digital-text">0 of {{ limit }} completed</span>
                             </div>
                         </div>
                         <div class="col-md-6 text-center">
                             <h5 class="digital-title">Status</h5>
-                            <div class="status-counters">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="status-counter success-counter">
-                                            <span id="successCount">0</span>
-                                            <small>Success</small>
-                                        </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="status-counter success-counter">
+                                        <span id="successCount">0</span><br>
+                                        <small>Success</small>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="status-counter error-counter">
-                                            <span id="errorCount">0</span>
-                                            <small>Failed</small>
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="status-counter error-counter">
+                                        <span id="errorCount">0</span><br>
+                                        <small>Failed</small>
                                     </div>
                                 </div>
                             </div>
@@ -104,7 +101,6 @@
                         <h5><i class="fas fa-check-circle me-2"></i> Sharing Complete</h5>
                         <p id="summaryText">Successfully shared the post.</p>
                     </div>
-
                     <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-3">
                         <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
                             <i class="fas fa-home me-2"></i> Back to Dashboard
@@ -123,7 +119,9 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const console = document.getElementById('console');
+        const consoleLog = document.getElementById('console');
+        if (!consoleLog) return;
+
         const progressBar = document.getElementById('progressBar');
         const loadingText = document.getElementById('loadingText');
         const resultsSummary = document.getElementById('resultsSummary');
@@ -136,204 +134,52 @@
         let errorCount = 0;
         let isCompleted = false;
 
-        // Function to add console messages
         function addConsoleMessage(message, type = 'info', timestamp = null) {
             const line = document.createElement('p');
             line.className = `console-${type} console-line`;
-
-            // Add timestamp if not provided
-            if (!timestamp) {
-                const now = new Date();
-                timestamp = `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}]`;
-            } else {
-                timestamp = `[${timestamp}]`;
-            }
-
-            // Add icon based on type
-            let icon = '';
-            switch(type) {
-                case 'success':
-                    icon = '✓ ';
-                    break;
-                case 'error':
-                    icon = '✗ ';
-                    break;
-                case 'warning':
-                    icon = '⚠ ';
-                    break;
-                default:
-                    icon = 'ℹ ';
-            }
-
-            line.textContent = `${timestamp} ${icon}${message}`;
-            console.appendChild(line);
-
-            // Auto-scroll to bottom
-            console.scrollTop = console.scrollHeight;
+            timestamp = timestamp || `[${new Date().toLocaleTimeString()}]`;
+            const icons = { success: '✓', error: '✗', warning: '⚠', info: 'ℹ' };
+            line.textContent = `${timestamp} ${icons[type] || 'ℹ'} ${message}`;
+            consoleLog.appendChild(line);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
         }
 
-        // Function to update progress
         function updateProgress(completed, total) {
-            const percentage = Math.round((completed / total) * 100);
-            progressBar.style.width = `${percentage}%`;
-            progressBar.textContent = `${percentage}%`;
-            progressBar.setAttribute('aria-valuenow', percentage);
-
-            // Update progress text
+            const percent = Math.round((completed / total) * 100);
+            progressBar.style.width = `${percent}%`;
+            progressBar.textContent = `${percent}%`;
+            progressBar.setAttribute('aria-valuenow', percent);
             document.getElementById('progressText').textContent = `${completed} of ${total} completed`;
-
-            // Update status text with timestamp
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString();
-            document.getElementById('statusText').textContent = `Last update: ${timeStr}`;
+            document.getElementById('statusText').textContent = `Last update: ${new Date().toLocaleTimeString()}`;
         }
 
-        // Function to check sharing status
         function checkStatus() {
             fetch('/api/share/status')
-                .then(response => response.json())
+                .then(res => res.json())
                 .then(data => {
-                    if (data.status === 'error') {
-                        addConsoleMessage(data.message, 'error');
-                        showError(data.message);
-                        return;
-                    }
-
-                    // Process any new results
+                    if (data.status === 'error') return showError(data.message);
                     const results = data.results || [];
                     for (let i = completedShares; i < results.length; i++) {
                         const result = results[i];
                         addConsoleMessage(result.message, result.status, result.timestamp);
-
                         if (result.status === 'success') {
                             successCount++;
                             document.getElementById('successCount').textContent = successCount;
-                        } else if (result.status === 'error') {
+                        } else {
                             errorCount++;
                             document.getElementById('errorCount').textContent = errorCount;
                         }
                     }
-
-                    // Update completed count
                     if (results.length > completedShares) {
                         completedShares = results.length;
                         updateProgress(completedShares, totalShares);
                     }
-
-                    // Check if completed
                     if (data.status === 'completed' && !isCompleted) {
-                        isCompleted = true;
                         showCompleted(successCount, errorCount);
+                        isCompleted = true;
                     } else if (!isCompleted) {
-                        // Continue polling
                         setTimeout(checkStatus, 1000);
                     }
                 })
-                .catch(error => {
-                    addConsoleMessage(`Error checking status: ${error.message}`, 'error');
-                    setTimeout(checkStatus, 2000); // Retry with longer delay
-                });
-        }
-
-        // Function to show error
-        function showError(message) {
-            loadingText.textContent = 'Error occurred!';
-            loadingText.className = 'loading-text mt-2 text-danger';
-            document.querySelector('.spinner-border').style.display = 'none';
-            progressBar.className = 'progress-bar bg-danger';
-
-            // Update status text
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString();
-            document.getElementById('statusText').innerHTML = `<span class="status-error">✗ Error at ${timeStr}</span>`;
-
-            // Update error counter
-            errorCount++;
-            document.getElementById('errorCount').textContent = errorCount;
-            document.querySelector('.error-counter').classList.add('pulse-animation');
-
-            summaryText.textContent = `Error: ${message}`;
-            resultsSummary.querySelector('.alert').className = 'alert alert-danger';
-            resultsSummary.style.display = 'block';
-        }
-
-        // Function to show completed
-        function showCompleted(success, error) {
-            loadingText.textContent = 'Sharing completed!';
-            loadingText.className = 'loading-text mt-2 text-success';
-            document.querySelector('.spinner-border').style.display = 'none';
-
-            // Update status text
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString();
-            document.getElementById('statusText').innerHTML = `<span class="status-success">✓ Completed at ${timeStr}</span>`;
-
-            // Update progress bar
-            if (error > 0) {
-                progressBar.className = 'progress-bar bg-warning';
-                resultsSummary.querySelector('.alert').className = 'alert alert-warning';
-                summaryText.textContent = `Completed with ${success} successful shares and ${error} errors.`;
-            } else {
-                progressBar.className = 'progress-bar bg-success';
-                summaryText.textContent = `Successfully shared ${success} times!`;
-            }
-
-            // Add completion animation to counters
-            document.querySelector('.success-counter').classList.add('pulse-animation');
-            if (error > 0) {
-                document.querySelector('.error-counter').classList.add('pulse-animation');
-            }
-
-            resultsSummary.style.display = 'block';
-        }
-
-        // Start the sharing process
-        function startSharing() {
-            addConsoleMessage('Starting share process...', 'info');
-            addConsoleMessage(`Post link: {{ link }}`, 'info');
-            addConsoleMessage(`Share limit: {{ limit }}`, 'info');
-
-            fetch('/api/share/start', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('input[name="csrf_token"]')?.value || ''
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'error') {
-                    addConsoleMessage(data.message, 'error');
-                    showError(data.message);
-                } else {
-                    // Start checking status
-                    checkStatus();
-                }
-            })
-            .catch(error => {
-                addConsoleMessage(`Error starting share: ${error.message}`, 'error');
-                showError(error.message);
-            });
-        }
-
-        // Share again button
-        if (shareAgainBtn) {
-            shareAgainBtn.addEventListener('click', function() {
-                window.location.href = "{{ url_for('dashboard') }}";
-            });
-        }
-
-        // Copy to clipboard function
-        window.copyToClipboard = function(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                alert('Link copied to clipboard!');
-            }, function(err) {
-                console.error('Could not copy text: ', err);
-            });
-        };
-
-        // Start the sharing process
-        startSharing();
-    });
-</script>
-{% endblock %}
+                .catch(err => {
+                    addConsoleMessage(`Fetch error: ${err
